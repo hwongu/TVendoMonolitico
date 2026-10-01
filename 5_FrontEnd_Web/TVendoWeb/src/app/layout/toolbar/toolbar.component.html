@@ -1,0 +1,9 @@
+<mat-toolbar color="primary">
+  <a class="brand" routerLink="/productos">TVendo</a>
+  <nav aria-label="Navegación principal">
+    <a mat-button routerLink="/productos" routerLinkActive="active">Productos</a>
+    <a mat-button routerLink="/ventas/nueva" routerLinkActive="active">Registrar venta</a>
+    <a mat-button routerLink="/ventas" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Consultar venta</a>
+    <a mat-button routerLink="/comprobantes" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Comprobante</a>
+  </nav>
+</mat-toolbar>
