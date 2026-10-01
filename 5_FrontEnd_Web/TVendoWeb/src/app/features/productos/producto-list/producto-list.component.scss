@@ -1,0 +1,22 @@
+.loading {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.inactive {
+  color: #8a1c1c;
+}
+
+.empty {
+  padding: 28px;
+  text-align: center;
+}

@@ -1,0 +1,138 @@
+<form [formGroup]="ventaForm" (ngSubmit)="registrarVenta()">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Registrar venta</mat-card-title>
+      <mat-card-subtitle>Ingresa los datos que TVendoApi procesará</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <section>
+        <h2>Datos de la venta</h2>
+        <mat-form-field appearance="outline">
+          <mat-label>Código de venta</mat-label>
+          <input matInput formControlName="codigoVenta" placeholder="V-002" />
+          @if (ventaForm.controls.codigoVenta.touched && ventaForm.controls.codigoVenta.invalid) {
+            <mat-error>El código es obligatorio.</mat-error>
+          }
+        </mat-form-field>
+      </section>
+
+      <section>
+        <h2>Productos</h2>
+        <div class="product-picker" [formGroup]="productoForm">
+          <mat-form-field appearance="outline">
+            <mat-label>Producto disponible</mat-label>
+            <mat-select formControlName="codigo">
+              @for (producto of productosDisponibles; track producto.codigo) {
+                <mat-option [value]="producto.codigo">{{ producto.codigo }} · {{ producto.nombre }}</mat-option>
+              }
+            </mat-select>
+            @if (productoForm.controls.codigo.touched && productoForm.controls.codigo.invalid) {
+              <mat-error>Selecciona un producto.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="quantity">
+            <mat-label>Cantidad</mat-label>
+            <input matInput type="number" min="1" formControlName="cantidad" />
+            @if (productoForm.controls.cantidad.touched && productoForm.controls.cantidad.invalid) {
+              <mat-error>Debe ser mayor que cero.</mat-error>
+            }
+          </mat-form-field>
+          <button mat-stroked-button color="primary" type="button" (click)="agregarProducto()" [disabled]="cargandoProductos">
+            Agregar
+          </button>
+          @if (cargandoProductos) { <mat-spinner diameter="28" /> }
+        </div>
+
+        @if (detalleInvalido) {
+          <p class="validation-message">Agrega al menos un producto.</p>
+        }
+
+        <div class="table-container">
+          <table mat-table [dataSource]="detalle">
+            <ng-container matColumnDef="codigo">
+              <th mat-header-cell *matHeaderCellDef>Código</th>
+              <td mat-cell *matCellDef="let item">{{ item.producto.codigo }}</td>
+            </ng-container>
+            <ng-container matColumnDef="producto">
+              <th mat-header-cell *matHeaderCellDef>Producto</th>
+              <td mat-cell *matCellDef="let item">{{ item.producto.nombre }}</td>
+            </ng-container>
+            <ng-container matColumnDef="precio">
+              <th mat-header-cell *matHeaderCellDef>Precio</th>
+              <td mat-cell *matCellDef="let item">{{ item.producto.precio | currency:'PEN':'symbol':'1.2-2' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="cantidad">
+              <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+              <td mat-cell *matCellDef="let item">{{ item.cantidad }}</td>
+            </ng-container>
+            <ng-container matColumnDef="subtotal">
+              <th mat-header-cell *matHeaderCellDef>Subtotal</th>
+              <td mat-cell *matCellDef="let item">{{ item.producto.precio * item.cantidad | currency:'PEN':'symbol':'1.2-2' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="accion">
+              <th mat-header-cell *matHeaderCellDef>Acción</th>
+              <td mat-cell *matCellDef="let item">
+                <button mat-button color="warn" type="button" (click)="eliminarProducto(item.producto.codigo)">Eliminar</button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">Aún no agregaste productos.</td>
+            </tr>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Envío</h2>
+        <mat-radio-group formControlName="tipoEnvio" aria-label="Tipo de envío">
+          @for (tipo of tiposEnvio; track tipo.valor) {
+            <mat-radio-button [value]="tipo.valor">{{ tipo.etiqueta }}</mat-radio-button>
+          }
+        </mat-radio-group>
+        @if (ventaForm.controls.tipoEnvio.touched && ventaForm.controls.tipoEnvio.invalid) {
+          <p class="validation-message">Selecciona un tipo de envío.</p>
+        }
+      </section>
+
+      <section>
+        <h2>Pago</h2>
+        <mat-radio-group formControlName="tipoPago" aria-label="Tipo de pago">
+          @for (tipo of tiposPago; track tipo) {
+            <mat-radio-button [value]="tipo">{{ tipo }}</mat-radio-button>
+          }
+        </mat-radio-group>
+        @if (ventaForm.controls.tipoPago.touched && ventaForm.controls.tipoPago.invalid) {
+          <p class="validation-message">Selecciona un tipo de pago.</p>
+        }
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Número de destino</mat-label>
+            <input matInput formControlName="numeroDestino" />
+            @if (ventaForm.controls.numeroDestino.touched && ventaForm.controls.numeroDestino.invalid) {
+              <mat-error>El número es obligatorio.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Titular</mat-label>
+            <input matInput formControlName="titular" />
+            @if (ventaForm.controls.titular.touched && ventaForm.controls.titular.invalid) {
+              <mat-error>El titular es obligatorio.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="wide">
+            <mat-label>Descripción del pago</mat-label>
+            <textarea matInput formControlName="descripcionPago" rows="2"></textarea>
+          </mat-form-field>
+        </div>
+      </section>
+    </mat-card-content>
+    <mat-card-actions align="end">
+      <button mat-flat-button color="primary" type="submit" [disabled]="guardando">
+        {{ guardando ? 'Registrando…' : 'Registrar venta' }}
+      </button>
+      @if (guardando) { <mat-spinner diameter="28" /> }
+    </mat-card-actions>
+  </mat-card>
+</form>
