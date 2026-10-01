@@ -1,0 +1,48 @@
+### Maven / Java ###
+target/
+out/
+*.class
+*.jar
+*.war
+*.ear
+
+### Maven Wrapper (mantener para clonado limpio) ###
+!.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+!mvnw
+!mvnw.cmd
+
+### IntelliJ IDEA ###
+.idea/
+*.iml
+*.ipr
+*.iws
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/
+
+### Logs / temp ###
+*.log
+*.tmp
+*.swp
+
+### OS ###
+.DS_Store
+Thumbs.db

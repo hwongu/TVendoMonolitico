@@ -1,0 +1,33 @@
+<mat-card class="search-card">
+  <mat-card-header>
+    <mat-card-title>Comprobante</mat-card-title>
+    <mat-card-subtitle>Consulta el comprobante generado por TVendo</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <form class="search" (submit)="consultar($event)">
+      <mat-form-field appearance="outline">
+        <mat-label>Código de venta</mat-label>
+        <input matInput [formControl]="codigoControl" placeholder="V-002" />
+        @if (codigoControl.touched && codigoControl.invalid) {
+          <mat-error>Ingresa un código.</mat-error>
+        }
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit">Consultar</button>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+@if (cargando) {
+  <div class="loading"><mat-spinner diameter="44" /></div>
+}
+
+@if (comprobante; as resultado) {
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Venta {{ resultado.codigoVenta }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <pre>{{ resultado.comprobante }}</pre>
+    </mat-card-content>
+  </mat-card>
+}
